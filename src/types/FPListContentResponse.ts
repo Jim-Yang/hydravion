@@ -1,4 +1,4 @@
-export type FPContentList = FPContent[]
+export type FPListContentResponse = FPContent[]
 
 export interface Image {
   width: number
@@ -128,7 +128,7 @@ export interface FPContent {
   selfUserInteraction: any
   thumbnail: Image
   isAccessible: boolean
-  videoAttachments: string[]
+  videoAttachments: string
   audioAttachments: any[]
   pictureAttachments: any[]
 }

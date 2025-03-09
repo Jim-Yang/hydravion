@@ -1,4 +1,4 @@
-export interface Root {
+export interface FPVideoResponse {
   cdn: string
   strategy: string
   resource: Resource

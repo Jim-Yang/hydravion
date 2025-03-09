@@ -1,24 +1,52 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { VideoPlayer } from './src/components/VideoPlayer';
+import { StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AuthProvider } from './src/contexts/AuthContext';
+import { HomeScreen } from './src/screens/HomeScreen';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const url = "https://cdn-vod-drm2.floatplane.com/Videos/ujMf1w9v4b/1080.mp4/chunk.m3u8?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXNvdXJjZVBhdGgiOiIvVmlkZW9zL3VqTWYxdzl2NGIvMTA4MC5tcDQvY2h1bmsubTN1OCIsInJlc3NvdXJjZVBhdGgiOiIvVmlkZW9zL3VqTWYxdzl2NGIvMTA4MC5tcDQvY2h1bmsubTN1OCIsInVzZXJJZCI6IjYxYTk1ZWZhZTlmYzE3NDBhYmQwMmRhMCIsImlhdCI6MTc0MTM3NDc0MiwiZXhwIjoxNzQxMzk2MzQyfQ.dLtGJdpYZmIEPn1hGzfXG7Qa2jY9FkcXXFyliBA6pXw";
-  const headers = {
-    'Cookie': 'sails.sid=s%3AtJwxOtJ1zunkOKfTTZiBwWL8Zd2g9Snd.7L2LbkccmY6%2BYTPO%2F92HCPGwVRzeplsDMAbWUkWC1yE'
-  };
-
   return (
-    <View style={styles.container}>
-      <VideoPlayer url={url} headers={headers} />
-    </View>
+    <NavigationContainer>
+      <AuthProvider>
+        <Stack.Navigator>
+          <Stack.Screen 
+            name="Home" 
+            component={HomeScreen}
+            options={{
+              headerStyle: {
+                backgroundColor: '#fff',
+              },
+              headerShadowVisible: true,
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+            }}
+          />
+        </Stack.Navigator>
+      </AuthProvider>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  debugContainer: {
+    padding: 8,
+  },
+  debugButton: {
+    backgroundColor: '#ff0000',
+    padding: 8,
+    borderRadius: 4,
     alignItems: 'center',
+  },
+  debugButtonText: {
+    color: '#ffffff',
+    fontWeight: '600',
   },
 });

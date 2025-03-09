@@ -1,4 +1,4 @@
-export interface FloatplaneResponse {
+export interface FPListResponse {
   settings: CreatorSetting[]
   emailNotificationsEnabled: boolean
 }
