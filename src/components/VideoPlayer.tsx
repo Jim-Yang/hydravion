@@ -18,8 +18,6 @@ interface PlayerState {
   seeking: boolean;
   paused: boolean;
   buffered: number;
-  videoWidth: number;
-  videoHeight: number;
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, headers, qualityOptions, onQualityChange, currentQuality }) => {
@@ -30,8 +28,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, headers, qualityO
     seeking: false,
     paused: false,
     buffered: 0,
-    videoWidth: 0,
-    videoHeight: 0,
   });
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -154,12 +150,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, headers, qualityO
     <View style={styles.container}>
       <TouchableOpacity 
         activeOpacity={1} 
-        style={[
-          styles.videoContainer,
-          (playerState.videoWidth && playerState.videoHeight) ? {
-            aspectRatio: playerState.videoWidth / playerState.videoHeight
-          } : undefined
-        ]}
+        style={styles.videoContainer}
         onPress={() => {
           if (showControls) {
             setShowControls(false);
@@ -174,13 +165,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, headers, qualityO
         }}
       >
         <Video
+          resizeMode="contain"
           ref={videoRef}
           source={{
             uri: url,
             headers
           }}
           style={styles.video}
-          resizeMode="contain"
           allowsExternalPlayback
           controls={false}
           paused={playerState.paused}
@@ -195,14 +186,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, headers, qualityO
               }));
             }
           }}
-          onLoad={({ duration, naturalSize }) => {
-            setPlayerState(prev => ({ 
-              ...prev, 
-              duration,
-              videoWidth: naturalSize.width,
-              videoHeight: naturalSize.height
-            }));
-          }}
+          onLoad={({ duration }) => setPlayerState(prev => ({ ...prev, duration }))}
           rate={playbackSpeed}
           enterPictureInPictureOnLeave
         />
@@ -457,6 +441,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    aspectRatio: 16/9,
   },
   video: {
     position: 'absolute',
