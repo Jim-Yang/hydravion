@@ -289,6 +289,8 @@ PODS:
     - React-RCTSettings (= 0.76.7)
     - React-RCTText (= 0.76.7)
     - React-RCTVibration (= 0.76.7)
+  - react-airplay (1.2.0):
+    - React-Core
   - React-callinvoker (0.76.7)
   - React-Core (0.76.7):
     - glog
@@ -1493,6 +1495,27 @@ PODS:
     - React-Core
   - react-native-safe-area-context (5.3.0):
     - React-Core
+  - react-native-slider (4.5.6):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-video (6.10.2):
     - DoubleConversion
     - glog
@@ -1855,6 +1878,7 @@ DEPENDENCIES:
   - RCTRequired (from `../node_modules/react-native/Libraries/Required`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
+  - react-airplay (from `../node_modules/react-airplay`)
   - React-callinvoker (from `../node_modules/react-native/ReactCommon/callinvoker`)
   - React-Core (from `../node_modules/react-native/`)
   - React-Core/RCTWebSocket (from `../node_modules/react-native/`)
@@ -1882,6 +1906,7 @@ DEPENDENCIES:
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - react-native-video (from `../node_modules/react-native-video`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -1969,6 +1994,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/TypeSafety"
   React:
     :path: "../node_modules/react-native/"
+  react-airplay:
+    :path: "../node_modules/react-airplay"
   React-callinvoker:
     :path: "../node_modules/react-native/ReactCommon/callinvoker"
   React-Core:
@@ -2021,6 +2048,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-render-html"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-slider:
+    :path: "../node_modules/@react-native-community/slider"
   react-native-video:
     :path: "../node_modules/react-native-video"
   React-nativeconfig:
@@ -2108,6 +2137,7 @@ SPEC CHECKSUMS:
   RCTRequired: eac044a04629288f272ee6706e31f81f3a2b4bfe
   RCTTypeSafety: cfe499e127eda6dd46e5080e12d80d0bfe667228
   React: 1f3737a983fdd26fb3d388ddbca41a26950fe929
+  react-airplay: 8197767f12cae11a7623b1507d29a89482a720ad
   React-callinvoker: 5c15ac628eab5468fe0b4dc453495f4742761f00
   React-Core: 4b90a977a5b2777fd8f4a8db7325a83431ecd2d8
   React-CoreModules: 385bbacfa34ac9208aa24f239a5184fa7ab1cd28
@@ -2134,6 +2164,7 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: 258cde5410c578c4739e1d3a3bc902b7a28d4625
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
   react-native-safe-area-context: f6fd1adb0c0dfb0a528f561c7c6f9297f3391af3
+  react-native-slider: 5ff41e8c14bb9227ed5450ef76c70d27615e3795
   react-native-video: 7f400f4301571ad7ddbee8c92c2ee8d2324fff16
   React-nativeconfig: 67fa7a63ea288cb5b1d0dd2deaf240405fec164f
   React-NativeModulesApple: cbf1a34443e1f67b56344547f4b0af69e1c685ba

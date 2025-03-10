@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity, useWindowDimensions, ViewComponent } from 'react-native';
 import RenderHtml from 'react-native-render-html';
 import { FPContent } from '../types/FPListContentResponse';
 import { useVideoDelivery } from '../hooks/useFPAPI';
 import { VideoPlayer } from './VideoPlayer';
 import { useAuth } from '../contexts/AuthContext';
+import { AirplayButton } from 'react-airplay';
 interface ContentViewProps {
   content: FPContent;
   onClose?: () => void;
@@ -24,6 +25,7 @@ export function ContentView({ content, onClose }: ContentViewProps) {
   const { data } = useVideoDelivery({
     guid: content.videoAttachments[0],
   });
+  const [selectedQuality, setSelectedQuality] = useState<string>('1080p');
 
   // Create a map of resolution labels to video URLs
   const videoUrls = React.useMemo(() => {
@@ -52,7 +54,15 @@ export function ContentView({ content, onClose }: ContentViewProps) {
         </TouchableOpacity>
         <View style={styles.backButton} />
       </View>
-      <VideoPlayer url={videoUrls['1080p']} headers={{ 'Cookie': cookie || '' }}/>
+      <View style={styles.videoContainer}>
+        <VideoPlayer 
+          url={videoUrls[selectedQuality] || videoUrls['1080p']} 
+          headers={{ 'Cookie': cookie || '' }}
+          qualityOptions={videoUrls}
+          currentQuality={selectedQuality}
+          onQualityChange={setSelectedQuality}
+        />
+      </View>
       <ScrollView style={styles.scrollView}>
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{content.title}</Text>
@@ -141,5 +151,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: '#333',
+  },
+  videoContainer: {
+    width: '100%',
+    aspectRatio: 16/9,
+    backgroundColor: '#000',
   },
 }); 
