@@ -4,6 +4,34 @@ import { useCreatorContent } from '../hooks/useFPAPI';
 import { FPContent } from '../types/FPListContentResponse';
 import { ContentListSkeleton } from './ContentListSkeleton';
 import { ContentView } from './ContentView';
+import { Ionicons } from '@expo/vector-icons';
+
+const getRelativeTimeString = (dateString: string): string => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
+  
+  if (diffInHours < 24) {
+    return `${Math.floor(diffInHours)} hours ago`;
+  } else if (diffInHours < 168) { // 7 days
+    return `${Math.floor(diffInHours / 24)} days ago`;
+  } else if (diffInHours < 720) { // 30 days
+    return `${Math.floor(diffInHours / 168)} weeks ago`;
+  } else {
+    return `${Math.floor(diffInHours / 720)} months ago`;
+  }
+};
+
+const formatDuration = (seconds: number): string => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }
+  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+};
 
 interface ContentListProps {
   creatorId: string;
@@ -24,28 +52,36 @@ export function ContentList({ creatorId }: ContentListProps) {
   });
 
   useEffect(() => {
-    if (data) {
-      if (data.length === 0) {
-        setHasMore(false);
-      } else if (refreshing) {
-        setAllContent(data);
-      } else {
-        setAllContent(prev => [...prev, ...data]);
-      }
-      setRefreshing(false);
+    if (!data || loading) return;
+
+    if (data.length === 0) {
+      setHasMore(false);
+      return;
     }
+
+    if (refreshing) {
+      setAllContent(data);
+      setRefreshing(false);
+      return;
+    }
+
+    // Check for duplicates before adding new content
+    const newContent = data.filter(
+      newItem => !allContent.some(existingItem => existingItem.id === newItem.id)
+    );
+
+    if (newContent.length === 0) {
+      setHasMore(false);
+      return;
+    }
+
+    setAllContent(prev => [...prev, ...newContent]);
   }, [data, loading]);
 
   const loadMore = () => {
-    if (hasMore && !loading) {
+    if (hasMore && !loading && data?.length === ITEMS_PER_PAGE) {
       setPage(prev => prev + 1);
     }
-  };
-
-  const clearList = () => {
-    setAllContent([]);
-    setPage(1);
-    setHasMore(true);
   };
 
   const onRefresh = async () => {
@@ -91,17 +127,27 @@ export function ContentList({ creatorId }: ContentListProps) {
         resizeMode="cover"
       />
       <View style={styles.contentContainer}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.text} numberOfLines={3}>{item.text}</Text>
+        <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">{item.title}</Text>
+        <View style={styles.metaContainer}>
+          <Text style={styles.creatorTitle}>{item.channel.title}</Text>
+          <Text style={styles.releaseDate}>{getRelativeTimeString(item.releaseDate)}</Text>
+        </View>
+        <View style={styles.durationContainer}>
+          <Image 
+            source={{ uri: item.channel.icon?.path }} 
+            style={styles.channelIcon}
+          />
+          <View style={styles.timeContainer}>
+            <Ionicons name="time-outline" size={14} color="#666" />
+            <Text style={styles.duration}>{formatDuration(item.metadata.videoDuration)}</Text>
+          </View>
+        </View>
       </View>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={clearList} style={styles.debugButton}>
-        <Text style={styles.debugButtonText}>Clear List (Debug)</Text>
-      </TouchableOpacity>
       <Text style={styles.header}>Recent Posts</Text>
       {loading && allContent.length === 0 ? (
         <ContentListSkeleton itemCount={8} />
@@ -155,17 +201,28 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  text: {
     fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  metaContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: 4,
+  },
+  creatorTitle: {
+    fontSize: 12,
+    color: '#666',
+    fontWeight: 'bold',
+  },
+  releaseDate: {
+    fontSize: 10,
     color: '#666',
   },
   thumbnail: {
-    width: 180,
-    height: 101,
+    width: 144,
+    height: 81,
     borderRadius: 4,
   },
   footer: {
@@ -188,21 +245,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-  debugButton: {
-    backgroundColor: '#ff0000',
-    padding: 8,
-    margin: 8,
-    borderRadius: 4,
-    alignItems: 'center',
-  },
-  debugButtonText: {
-    color: '#ffffff',
-    fontWeight: '600',
-  },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
     padding: 16,
     paddingBottom: 8,
+  },
+  durationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+  },
+  channelIcon: {
+    width: 18,
+    height: 18,
+    borderRadius: 8,
+  },
+  duration: {
+    fontSize: 12,
+    color: '#666',
   },
 }); 

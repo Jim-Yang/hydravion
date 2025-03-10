@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, Dimensions, Text, AppState, TouchableOpacity, Modal, Platform } from 'react-native';
+import { StyleSheet, View, Dimensions, Text, AppState, TouchableOpacity, Modal, Platform, ActivityIndicator } from 'react-native';
 import Video from 'react-native-video';
 import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
@@ -18,6 +18,7 @@ interface PlayerState {
   seeking: boolean;
   paused: boolean;
   buffered: number;
+  isBuffering: boolean;
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, headers, qualityOptions, onQualityChange, currentQuality }) => {
@@ -28,6 +29,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, headers, qualityO
     seeking: false,
     paused: false,
     buffered: 0,
+    isBuffering: true,
   });
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -182,11 +184,15 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, headers, qualityO
               setPlayerState(prev => ({
                 ...prev,
                 currentTime,
-                buffered: playableDuration || prev.buffered
+                buffered: playableDuration || prev.buffered,
+                isBuffering: false
               }));
             }
           }}
-          onLoad={({ duration }) => setPlayerState(prev => ({ ...prev, duration }))}
+          onLoad={({ duration }) => setPlayerState(prev => ({ ...prev, duration, isBuffering: false }))}
+          onBuffer={({ isBuffering }) => {
+            setPlayerState(prev => ({ ...prev, isBuffering }));
+          }}
           rate={playbackSpeed}
           enterPictureInPictureOnLeave
         />
@@ -209,16 +215,21 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, headers, qualityO
               </View>
             </View>
 
-            {/* Center Play/Pause Button */}
+            {/* Center Play/Pause/Loading Button */}
             <TouchableOpacity 
               style={styles.centerButton} 
               onPress={togglePlayPause}
+              disabled={playerState.isBuffering}
             >
-              <Ionicons 
-                name={playerState.paused ? "play" : "pause"} 
-                size={40} 
-                color="white" 
-              />
+              {playerState.isBuffering ? (
+                <ActivityIndicator size="large" color="white" />
+              ) : (
+                <Ionicons 
+                  name={playerState.paused ? "play" : "pause"} 
+                  size={40} 
+                  color="white" 
+                />
+              )}
             </TouchableOpacity>
 
             {/* Bottom Controls Bar */}

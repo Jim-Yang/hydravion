@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity, useWindowDimensions, ViewComponent } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity, useWindowDimensions } from 'react-native';
 import RenderHtml from 'react-native-render-html';
 import { FPContent } from '../types/FPListContentResponse';
 import { useVideoDelivery } from '../hooks/useFPAPI';
 import { VideoPlayer } from './VideoPlayer';
 import { useAuth } from '../contexts/AuthContext';
-import { AirplayButton } from 'react-airplay';
+
 interface ContentViewProps {
   content: FPContent;
   onClose?: () => void;
